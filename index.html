@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Explorador de Cachorros</title>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Cachorros Aleatórios</h1>
+        <p class="subtitle">API em Node.js</p>
+
+        <div class="controls">
+            <button onclick="cachorroAleatorio()">
+                🐕 Cachorro Aleatório
+            </button>
+
+            <input
+                type="text"
+                id="raca"
+                placeholder="Escolha uma raça (ex: husky, beagle...)"
+            >
+
+            <button onclick="procurarCachorro()">
+                🔍 Procurar
+            </button>
+        </div>
+
+        <div class="dog-area">
+            <img id="DOGS" src="" alt="Imagem do cachorro">
+        </div>
+
+    </div>
+
+    <script>
+        async function cachorroAleatorio() {
+            try {
+                const resposta = await fetch(
+                    'http://localhost:3000/api/cachorro'
+                );
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    alert(dados.erro || 'Erro ao procurar cachorro!');
+                    return;
+                }
+
+                document.getElementById('DOGS').src = dados.imagem;
+
+            } catch (erro) {
+                alert('Erro ao conectar com a API!');
+            }
+        }
+
+        async function procurarCachorro() {
+            const raca = document.getElementById('raca').value.trim();
+
+            if (!raca) {
+                alert('Escolha uma raça!');
+                return;
+            }
+
+            try {
+                const resposta = await fetch(
+                    `http://localhost:3000/api/cachorro/${encodeURIComponent(raca)}`
+                );
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    alert(dados.erro || 'Raça não encontrada!');
+                    return;
+                }
+
+                document.getElementById('DOGS').src = dados.imagem;
+
+            } catch (erro) {
+                alert('Erro ao conectar com a API!');
+            }
+        }
+    </script>
+
+</body>
+</html>
